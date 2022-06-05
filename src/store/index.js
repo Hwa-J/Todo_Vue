@@ -23,35 +23,21 @@ export default createStore({
     setTodos(state, payload) {
       state.todos = payload
     },
+
     unshiftTodo(state, newTodo) {
       state.todos.unshift(newTodo.data)
       console.log(state.todos)
     },
-    // pushTodo(state, newTodo) {
-    //   state.todos.push(newTodo.data)
-    //   console.log(state.todos)
-    // },
+
     delete(state, todoId) {
       let i = state.todos.findIndex(todo => todo.id === todoId)
       state.todos.splice(i,1)
     },
+
     reverseOrder(state) {
       state.order = (state.todos.length) * -1
     },
-    reverseReorder(state) {
-      let i = 0
-      state.todos.map(todo  => {
-        todo.order = (state.todos.length - (i += 1) ) * -1
-      })
-    },
-    // newOrder(state) {
-    //   state.order = (state.todos.length)
-    // },
-    // reorder(state) {
-    //   state.todos.map((todo, index) => {
-    //     todo.order = index
-    //   })
-    // },
+
     // todos 배열 데이터의 아이템인 todo 객체 데이터를 수정하는 함수
     setTodo(state, targetTodo, payload) {
       state.todos.map(todo => {
@@ -62,15 +48,18 @@ export default createStore({
         }
       })
     },
+
     reorderTodos(state, {oldIndex, newIndex}) {
       console.log(oldIndex, newIndex)
       const clone = { ...state.todos[oldIndex] }
       state.todos.splice(oldIndex, 1)
       state.todos.splice(newIndex, 0, clone)
     },
+
     loading(state, payload) {
       state.loading = payload
     },
+
     filter(state, payload) {
       state.todos = state.todos.filter(todo => 
         todo.done === payload) 
@@ -88,8 +77,8 @@ export default createStore({
       console.log(res)
       commit('setTodos', res.data)
       commit('loading', false)
-      // commit('reorder')
     },
+
     // action 함수로 첫번째 인수로 context, 두번째 payload의 자리지만 명확히 title이 들어와야하므로 명칭 바꿈
     async createTodo({ state, commit }, title) {
       commit('reverseOrder')
@@ -103,14 +92,11 @@ export default createStore({
           order: state.order
         }
       })
-      console.log(newTodo)
       commit('unshiftTodo', newTodo)
-      // state.todos.unshift(newTodo.data)
-      // dispatch('readTodos')
     },
+
     async deleteTodo({ commit, dispatch }, todoId) {
       commit('delete', todoId)
-      // commit('reverseReorder')
       await axios({
         url: `${END_POINT}/${todoId}`,
         method: 'DELETE',
@@ -119,6 +105,7 @@ export default createStore({
       // todo 삭제후 순서 재배정
       dispatch('orderChange')
     },
+
     async updateTodo({ commit }, todo, newValue) {
       commit('setTodo', todo, newValue)
       await axios({
@@ -132,13 +119,12 @@ export default createStore({
         }
       })
     },
+
     // 변경된 todo 순서 데이터 전송
     async orderChange({ commit, state }, event) {
       if (event !== undefined) {
         commit('reorderTodos', event)
       }
-      // 데이터 전송 전 순서값을 재배정 후 전송
-      // commit('reverseReorder')
       const todoIds = state.todos.map(todo => todo.id)
       await axios({
         url: `${END_POINT}/reorder`,
@@ -150,14 +136,17 @@ export default createStore({
         }
       })
     },
+
     async filterTodos({ commit, dispatch }, payload) {
       await dispatch('readTodos')
       commit('filter', payload)
     },
+
     allDelete({ state, dispatch }) {
       const todoId = state.todos.map(todo => todo.id)
       todoId.forEach(id => dispatch('deleteTodo', id))
     },
+
     doneDelete({ state, dispatch }) {
       const todoId = state.todos.filter(todo => todo.done).map(todo => todo.id)
       todoId.forEach(id => dispatch('deleteTodo', id))
