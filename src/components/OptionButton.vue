@@ -26,7 +26,7 @@
 export default {
   data() {
     return {
-      filter: ['All', 'Complete', 'Incomplete'],
+      filter: ['All', 'Done', 'Doing'],
       filered: 'All'
     }
   },
@@ -36,10 +36,10 @@ export default {
         case 'All':
           this.$store.dispatch('readTodos')
           break
-        case 'Complete':
+        case 'Done':
           this.$store.dispatch('filterTodos', true)
           break
-        case 'Incomplete':
+        case 'Doing':
           this.$store.dispatch('filterTodos', false)
       }
     },
