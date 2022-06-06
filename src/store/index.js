@@ -24,16 +24,18 @@ export default createStore({
       state.todos = payload
     },
 
+    // 새로 추가한 항목을 todos의 맨 앞에 넣기위한 함수
     unshiftTodo(state, newTodo) {
       state.todos.unshift(newTodo.data)
-      console.log(state.todos)
     },
 
+    // 삭제할 항목을 찾아 todos에서 삭제하는 함수
     delete(state, todoId) {
       let i = state.todos.findIndex(todo => todo.id === todoId)
       state.todos.splice(i,1)
     },
 
+    // order의 번호를 거꾸로(음수) 계산하기 위한 함수
     reverseOrder(state) {
       state.order = (state.todos.length) * -1
     },
@@ -49,6 +51,7 @@ export default createStore({
       })
     },
 
+    // todos의 자리를 변경하는 함수
     reorderTodos(state, {oldIndex, newIndex}) {
       console.log(oldIndex, newIndex)
       const clone = { ...state.todos[oldIndex] }
@@ -56,30 +59,33 @@ export default createStore({
       state.todos.splice(newIndex, 0, clone)
     },
 
+    // loading 이미지를 조종하는 함수
     loading(state, payload) {
       state.loading = payload
     },
 
+    // todos의 done항목 값을 필터링하는 함수
     filter(state, payload) {
       state.todos = state.todos.filter(todo => 
         todo.done === payload) 
     }
   },
   actions: {
-    async readTodos({ commit }) {
-      commit('loading', true)
+    // 데이터 불러오기
+    async readTodos({ state, commit }) {
+      if (state.todos.length) {commit('loading', true)}
       const res = await axios({
         url: END_POINT,
         method: 'GET',
         // headers: headers 속성과 값의 이름이 같으면 생략 가능
         headers
       })
-      console.log(res)
+      console.log(res.data)
       commit('setTodos', res.data)
       commit('loading', false)
     },
 
-    // action 함수로 첫번째 인수로 context, 두번째 payload의 자리지만 명확히 title이 들어와야하므로 명칭 바꿈
+    // 데이터 생성하기
     async createTodo({ state, commit }, title) {
       commit('reverseOrder')
       const newTodo = await axios({
@@ -95,6 +101,7 @@ export default createStore({
       commit('unshiftTodo', newTodo)
     },
 
+    // 데이터 삭제하기
     async deleteTodo({ commit, dispatch }, todoId) {
       commit('delete', todoId)
       await axios({
@@ -106,6 +113,7 @@ export default createStore({
       dispatch('orderChange')
     },
 
+    // 데이터 수정하기
     async updateTodo({ commit }, todo, newValue) {
       commit('setTodo', todo, newValue)
       await axios({
@@ -137,16 +145,20 @@ export default createStore({
       })
     },
 
-    async filterTodos({ commit, dispatch }, payload) {
+    // 옵션 버튼들
+    // 선택한 조건(boolean)에 맞게 todos 필터링
+    async filterTodos({ commit, dispatch }, boolean) {
       await dispatch('readTodos')
-      commit('filter', payload)
+      commit('filter', boolean)
     },
 
+    // 데이터 전체 삭제
     allDelete({ state, dispatch }) {
       const todoId = state.todos.map(todo => todo.id)
       todoId.forEach(id => dispatch('deleteTodo', id))
     },
 
+    // done값이 true인 데이터만 삭제
     doneDelete({ state, dispatch }) {
       const todoId = state.todos.filter(todo => todo.done).map(todo => todo.id)
       todoId.forEach(id => dispatch('deleteTodo', id))
