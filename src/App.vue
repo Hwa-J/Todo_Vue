@@ -25,7 +25,7 @@ export default {
 <style lang="scss">
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  color: #333;
+  color: $color-darkgray;
 }
 img.background {
   position: fixed;
@@ -37,7 +37,7 @@ img.background {
   bottom: 0px;
   z-index: -1;
   overflow: hidden;
-  filter: blur(20px) invert(100%);
+  filter: blur(30px) invert(100%);
 }
 h1 {
   text-align: center;
@@ -63,7 +63,7 @@ button {
     font: {
       size: 16px
     };
-    color: rgb(80, 79, 79);
+    color: $color-darkgray;
   }
 }
 input {
