@@ -6,11 +6,12 @@
       alt="loading" />
     <TodoItem
       v-for="todo in todos"
+      v-else
       :key="todo.id" 
       :todo="todo"
       @checked-done="checkedDone(todo, $event)"
       @edit-title="updateTitle(todo, $event)" /> 
-      <!-- todo데이터 props로 보냄 -->
+    <!-- todo데이터 props로 보냄 -->
   </ul>
   <OptionButton />
 </template>
