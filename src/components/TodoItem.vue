@@ -1,5 +1,5 @@
 <template>
-  <li>
+  <li :title="todo.updatedAt.slice(0,10)">
     <!-- done box -->
     <div class="handle">
       <i class="fas fa-grip-lines"></i>
@@ -12,14 +12,19 @@
     <template v-if="!editMode">
       <span
         class="title"
-        :class="{done: todo.done === true}">{{ todo.title }}</span>
+        :class="{done: todo.done}">
+        {{ todo.title }}
+      </span>
+      <span
+        v-if="!editMode"
+        class="update">{{ todo.updatedAt.slice(0,10) }}</span>
       <button
         :disabled="todo.done"
         @click.stop="onEditMode">
         <i class="far fa-edit"></i>
       </button>
     </template>
-    <!-- on edit     -->
+    <!-- on edit -->
     <template v-else>
       <form
         class="edit-form"
@@ -70,9 +75,6 @@ export default {
       return this.$store.state.todos
     }
   },
-  mounted() {
-
-  },
   methods: {
     onEditMode() {
       this.editMode = true
@@ -111,6 +113,9 @@ li {
   margin: 5px 0;
   align-items: center;
   border-radius: 4px;
+  button {
+    padding: 0 5px;
+  }
 }
 li:hover {
   background-color: $color-lightgray;
@@ -119,6 +124,10 @@ li:hover {
       &:hover{
         opacity: 1;
       }
+  }
+  .update {
+    // opacity: 1;
+    display: block;
   }
 }
 li.sortable-ghost {
@@ -129,7 +138,7 @@ li.sortable-drag {
 }
 .handle {
   color: gray;
-  margin-right: 5px;
+  margin: 0 5px;
   &:hover {
     cursor: grab;
   }
@@ -145,6 +154,15 @@ li.sortable-drag {
 .title.done {
   color: gray;
   text-decoration:line-through;
+}
+.update {
+  font-size: 12px;
+  color: gray;
+  // opacity: 0;
+  display: none;
+}
+button[disabled] {
+  display: none;
 }
 .edit-form {
   position: relative;
@@ -171,7 +189,6 @@ input.edit-input {
   @include input-focused;
 }
 i {
-  padding: 0 5px;
   opacity: 0;
 }
 .fa-edit {
