@@ -17,7 +17,17 @@ export default createStore({
       loading: false
     }
   },
-
+  getters: {
+    filteredToDone(state) {
+      state.todos = state.todos.filter(todo => 
+        todo.done === true) 
+    },
+    filteredToDoing(state) {
+      state.todos = state.todos.filter(todo => 
+        todo.done === false) 
+    }
+  }
+  ,
   mutations: {
     // payload는 서버에서 가져온 todos가 들어갈 자리
     setTodos(state, payload) {
@@ -53,7 +63,6 @@ export default createStore({
 
     // todos의 자리를 변경하는 함수
     reorderTodos(state, {oldIndex, newIndex}) {
-      console.log(oldIndex, newIndex)
       const clone = { ...state.todos[oldIndex] }
       state.todos.splice(oldIndex, 1)
       state.todos.splice(newIndex, 0, clone)
@@ -80,7 +89,6 @@ export default createStore({
         // headers: headers 속성과 값의 이름이 같으면 생략 가능
         headers
       })
-      console.log(res.data)
       commit('setTodos', res.data)
       commit('loading', false)
     },
