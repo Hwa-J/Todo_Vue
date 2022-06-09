@@ -5,7 +5,7 @@
       src="../images/loading.gif" 
       alt="loading" />
     <TodoItem
-      v-for="todo in todos"
+      v-for="todo in filteredTodos"
       v-else
       :key="todo.id" 
       :todo="todo"
@@ -27,8 +27,8 @@ export default {
     OptionButton
   },
   computed: {
-    todos() {
-      return this.$store.state.todos
+    filteredTodos() {
+      return this.$store.getters.filteredTodos
     },
     loading() {
       return this.$store.state.loading

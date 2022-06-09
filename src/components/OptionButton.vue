@@ -2,8 +2,7 @@
   <section class="option-section">
     <select
       id="filter"
-      v-model="filered"
-      @change="filterTodos">
+      @change="filterTodos($event)">
       <option 
         v-for="(item, index) in filter"
         :key="index"
@@ -27,21 +26,12 @@ export default {
   data() {
     return {
       filter: ['All', 'Done', 'Doing'],
-      filered: 'All'
     }
   },
   methods: {
-    async filterTodos() {
-      switch (this.filered) {
-        case 'All':
-          this.$store.dispatch('readTodos')
-          break
-        case 'Done':
-          this.$store.dispatch('filterTodos', true)
-          break
-        case 'Doing':
-          this.$store.dispatch('filterTodos', false)
-      }
+    filterTodos(event) {
+      let filter = event.target.value
+      this.$store.dispatch('filterTodos', filter)
     },
     allDelete() {
       this.$store.dispatch('allDelete')
